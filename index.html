@@ -317,100 +317,381 @@
 </body>
 </html>
 
-<?php
-/**
- * ELIO CLAN - 가입 신청서 처리 스크립트 (submit.php)
- */
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELIO CLAN - 가입 신청서</title>
+    <style>
+        /* 기본 스타일 리셋 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
 
-header('Content-Type: text/html; charset=utf-8');
+        body {
+            background-color: #0b0b0b;
+            color: #e5e5e5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+        }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // 1. 유저가 입력한 값 받아오기
-    $username = isset($_POST['username']) ? htmlspecialchars(trim($_POST['username'])) : '';
-    $userage  = isset($_POST['userage']) ? htmlspecialchars(trim($_POST['userage'])) : '';
-    $gameid   = isset($_POST['gameid']) ? htmlspecialchars(trim($_POST['gameid'])) : '';
-    $gametime = isset($_POST['gametime']) ? htmlspecialchars(trim($_POST['gametime'])) : '';
-    $mic      = isset($_POST['mic']) ? htmlspecialchars(trim($_POST['mic'])) : '';
-    $reason   = isset($_POST['reason']) ? htmlspecialchars(trim($_POST['reason'])) : '';
+        /* 메인 컨테이너 (블랙 & 골드 컨셉) */
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: #121212;
+            border: 1px solid #d4af37; /* 클래식 골드 테두리 */
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.1);
+        }
 
-    if (empty($username) || empty($userage) || empty($gameid) || empty($reason)) {
-        echo "<script>alert('필수 입력 항목이 누락되었습니다.'); history.back();</script>";
-        exit;
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #d4af37;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* 상단 단계 표시줄 */
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .progress-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 2px;
+            background: #2a2a2a;
+            z-index: 1;
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 2px;
+            background: #d4af37;
+            z-index: 1;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            background: #121212;
+            border: 2px solid #2a2a2a;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #888;
+            z-index: 2;
+            transition: all 0.4s ease;
+        }
+
+        .step-dot.active {
+            border-color: #d4af37;
+            color: #d4af37;
+            background: #1a1a1a;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* 단계별 화면 제어 */
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #c5a059;
+            margin-bottom: 8px;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
+        }
+
+        .input-group textarea {
+            resize: none;
+            height: 120px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-next, .btn-submit {
+            background: linear-gradient(135deg, #d4af37 0%, #aa841a 100%);
+            color: #000;
+        }
+
+        .btn-prev {
+            background: #222;
+            color: #aaa;
+            border: 1px solid #333;
+        }
+
+        .notice-box {
+            background: #161616;
+            border-left: 3px solid #d4af37;
+            padding: 15px;
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>ELIO CLAN</h1>
+        <p>클랜 가입 신청서</p>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+        <div class="step-dot active">1</div>
+        <div class="step-dot">2</div>
+        <div class="step-dot">3</div>
+    </div>
+
+    <form id="applicationForm" onsubmit="sendToDiscord(event)">
+        
+        <div class="form-step active">
+            <div class="notice-box">
+                <strong>[ELIO 클랜 가입 안내]</strong><br>
+                1. 이중 클랜 및 불법 프로그램 사용자는 가입이 불가합니다.<br>
+                2. 신청서 작성이 완료되면 디스코드로 실시간 전달됩니다.
+            </div>
+            
+            <div class="input-group">
+                <label>실명 또는 닉네임</label>
+                <input type="text" id="username" placeholder="예: 홍길동" required>
+            </div>
+
+            <div class="input-group">
+                <label>나이</label>
+                <input type="number" id="userage" placeholder="예: 24" required>
+            </div>
+
+            <div class="btn-container">
+                <div></div>
+                <button type="button" class="btn btn-next" onclick="nextStep(1)">다음 단계</button>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <div class="input-group">
+                <label>게임 내 ID (정확하게 입력)</label>
+                <input type="text" id="gameid" placeholder="elio_player" required>
+            </div>
+
+            <div class="input-group">
+                <label>주요 접속 시간대</label>
+                <select id="gametime" required>
+                    <option value="" disabled selected>선택해주세요</option>
+                    <option value="오전 (06시 ~ 12시)">오전 (06시 ~ 12시)</option>
+                    <option value="오후 (12시 ~ 18시)">오후 (12시 ~ 18시)</option>
+                    <option value="저녁 (18시 ~ 24시)">저녁 (18시 ~ 24시)</option>
+                    <option value="새벽 (24시 ~ 06시)">새벽 (24시 ~ 06시)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>디스코드 마이크 가능 여부</label>
+                <select id="mic" required>
+                    <option value="" disabled selected>선택해주세요</option>
+                    <option value="듣기/말하기 모두 가능">듣기 / 말하기 모두 가능</option>
+                    <option value="듣기만 가능">듣기만 가능</option>
+                </select>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-prev" onclick="prevStep(0)">이전 단계</button>
+                <button type="button" class="btn btn-next" onclick="nextStep(2)">다음 단계</button>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <div class="input-group">
+                <label>지원 동기 및 각오</label>
+                <textarea id="reason" placeholder="간단한 자기소개 및 신청 이유를 적어주세요." required></textarea>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-prev" onclick="prevStep(1)">이전 단계</button>
+                <button type="submit" class="btn btn-submit">신청서 제출하기</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    const formSteps = document.querySelectorAll(".form-step");
+    const stepDots = document.querySelectorAll(".step-dot");
+    const progressBar = document.getElementById("progress");
+
+    function updateProgress(stepIndex) {
+        progressBar.style.width = (stepIndex / (formSteps.length - 1)) * 100 + "%";
+        stepDots.forEach((dot, idx) => {
+            if (idx <= stepIndex) dot.classList.add("active");
+            else dot.classList.remove("active");
+        });
     }
 
-    // 2. ⭐디스코드에서 복사한 웹훅 URL을 아래 큰따옴표 안에 붙여넣으세요⭐
-    // 예: $webhook_url = "https://discord.com/api/webhooks/123456789/...";
-    $webhook_url = "https://discord.com/api/webhooks/1516303098421710921/bpqvQewa-kLt61OTlixvR0ECLHuMlZVWp4Kcy0IaI62rBtoUJMmMy36p0sbmy8MFaKaL"; 
+    function nextStep(currentStepIndex) {
+        const currentStep = formSteps[currentStepIndex - 1];
+        const inputs = currentStep.querySelectorAll("input, select, textarea");
+        let allValid = true;
+        inputs.forEach(input => { if (!input.checkValidity()) { input.reportValidity(); allValid = false; } });
+        if (!allValid) return;
 
-    // 웹훅 주소가 수정되지 않았을 때의 방어 코드
-    if ($webhook_url == "복사한_디스코드_웹훅_URL을_여기에_붙여넣으세요") {
-        echo "<script>alert('서버 설정 오류: 디스코드 웹훅 주소가 비어있습니다. submit.php 파일을 수정해주세요.'); history.back();</script>";
-        exit;
+        formSteps[currentStepIndex - 1].classList.remove("active");
+        formSteps[currentStepIndex].classList.add("active");
+        updateProgress(currentStepIndex);
     }
 
-    // 3. 디스코드 메시지 레이아웃 설정 (골드 박스 서식)
-    $timestamp = date("Y-m-d H:i:s");
-    
-    $json_data = json_encode([
-        "username" => "ELIO 신청 알리미",
-        "embeds" => [
-            [
-                "title" => "✨ ELIO 클랜에 새로운 가입 신청이 왔습니다!",
-                "description" => "홈페이지를 통해 접수된 신청서 내용입니다. 검토 후 연락바랍니다.",
-                "color" => hexdec("D4AF37"), // ELIO 로고 맞춤 골드 컬러 테두리선
-                "timestamp" => date('c'),
-                
-                "fields" => [
-                    [
-                        "name" => "👤 신청자 인적사항",
-                        "value" => "• **이름/닉네임:** {$username}\n• **나이:** {$userage}세",
-                        "inline" => false
-                    ],
-                    [
-                        "name" => "🎮 게임 및 디스코드 정보",
-                        "value" => "• **게임 ID:** **{$gameid}**\n• **접속 시간대:** {$gametime}\n• **마이크 상태:** {$mic}",
-                        "inline" => false
-                    ],
-                    [
-                        "name" => "📝 지원 동기 및 한마디",
-                        "value" => "```\n{$reason}\n```",
-                        "inline" => false
-                    ]
+    function prevStep(targetStepIndex) {
+        formSteps[targetStepIndex + 1].classList.remove("active");
+        formSteps[targetStepIndex].classList.add("active");
+        updateProgress(targetStepIndex);
+    }
+
+    // ⭐ 깃허브 전용: 디스코드 웹훅으로 바로 쏘는 자바스크립트 기능 ⭐
+    function sendToDiscord(event) {
+        event.preventDefault(); // 페이지 새로고침 방지
+
+        // 1. 디스코드 채널에서 가져온 본인의 웹훅 URL을 여기에 붙여넣으세요!
+        const webhookUrl = "https://discord.com/api/webhooks/1516303098421710921/bpqvQewa-kLt61OTlixvR0ECLHuMlZVWp4Kcy0IaI62rBtoUJMmMy36p0sbmy8MFaKaL";
+
+        if(webhookUrl === "https://discord.com/api/webhooks/1516303098421710921/bpqvQewa-kLt61OTlixvR0ECLHuMlZVWp4Kcy0IaI62rBtoUJMmMy36p0sbmy8MFaKaL") {
+            alert("설정 오류: 소스코드 내에 디스코드 웹훅 주소를 입력해주세요.");
+            return;
+        }
+
+        // 2. 입력된 값 수집
+        const username = document.getElementById("username").value;
+        const userage = document.getElementById("userage").value;
+        const gameid = document.getElementById("gameid").value;
+        const gametime = document.getElementById("gametime").value;
+        const mic = document.getElementById("mic").value;
+        const reason = document.getElementById("reason").value;
+
+        // 3. 디스코드 전송 데이터 패키지 만들기 (골드 테두리 스타일)
+        const requestData = {
+            username: "ELIO 신청 알리미",
+            embeds: [{
+                title: "✨ ELIO 클랜에 새로운 가입 신청이 왔습니다!",
+                description: "깃허브 홈페이지를 통해 접수된 신청서입니다.",
+                color: parseInt("D4AF37", 16), // 골드 색상
+                timestamp: new Date().toISOString(),
+                fields: [
+                    { name: "👤 신청자 인적사항", value: `• **이름/닉네임:** ${username}\n• **나이:** ${userage}세`, inline: false },
+                    { name: "🎮 게임 및 디스코드 정보", value: `• **게임 ID:** **${gameid}**\n• **접속 시간대:** ${gametime}\n• **마이크 상태:** ${mic}`, inline: false },
+                    { name: "📝 지원 동기 및 한마디", value: `\`\`\`\n${reason}\n\`\`\``, inline: false }
                 ],
-                "footer" => [
-                    "text" => "신청 일시: {$timestamp}"
-                ]
-            ]
-        ]
-    ], JSON_UNESCAPED_UNICODE);
+                footer: { text: "ELIO CLAN 가입 신청 시스템" }
+            }]
+        };
 
-    // 4. cURL을 이용한 디스코드 데이터 전송
-    $ch = curl_init($webhook_url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-    $response = curl_exec($ch);
-    $http_code = curl_get_info($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    // 5. 전송 결과 안내 및 리다이렉트
-    if ($http_code == 204 || $http_code == 200) {
-        echo "<script>
-                alert('ELIO 클랜 신청이 완료되었습니다!\\n운영진 확인 후 안내해 드리겠습니다.');
-                location.href = 'index.html'; 
-              </script>";
-    } else {
-        echo "<script>
-                alert('전송 오류가 발생했습니다. 웹훅 주소를 다시 확인해주세요. (에러 코드: " . $http_code . ")');
-                history.back();
-              </script>";
+        // 4. 디스코드로 전송 (Fetch API 이용)
+        fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("ELIO 클랜 신청이 성공적으로 완료되었습니다!\n운영진 확인 후 연락드리겠습니다.");
+                location.reload(); // 신청 완료 후 페이지 초기화
+            } else {
+                alert("전송 중 오류가 발생했습니다. 웹훅 주소를 다시 확인해주세요.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("네트워크 오류가 발생했습니다.");
+        });
     }
-} else {
+</script>
+</body>
+</html>
     echo "올바르지 않은 접근입니다.";
 }
 ?>
