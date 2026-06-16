@@ -316,3 +316,101 @@
 </script>
 </body>
 </html>
+
+<?php
+/**
+ * ELIO CLAN - 가입 신청서 처리 스크립트 (submit.php)
+ */
+
+header('Content-Type: text/html; charset=utf-8');
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    // 1. 유저가 입력한 값 받아오기
+    $username = isset($_POST['username']) ? htmlspecialchars(trim($_POST['username'])) : '';
+    $userage  = isset($_POST['userage']) ? htmlspecialchars(trim($_POST['userage'])) : '';
+    $gameid   = isset($_POST['gameid']) ? htmlspecialchars(trim($_POST['gameid'])) : '';
+    $gametime = isset($_POST['gametime']) ? htmlspecialchars(trim($_POST['gametime'])) : '';
+    $mic      = isset($_POST['mic']) ? htmlspecialchars(trim($_POST['mic'])) : '';
+    $reason   = isset($_POST['reason']) ? htmlspecialchars(trim($_POST['reason'])) : '';
+
+    if (empty($username) || empty($userage) || empty($gameid) || empty($reason)) {
+        echo "<script>alert('필수 입력 항목이 누락되었습니다.'); history.back();</script>";
+        exit;
+    }
+
+    // 2. ⭐디스코드에서 복사한 웹훅 URL을 아래 큰따옴표 안에 붙여넣으세요⭐
+    // 예: $webhook_url = "https://discord.com/api/webhooks/123456789/...";
+    $webhook_url = "https://discord.com/api/webhooks/1516303098421710921/bpqvQewa-kLt61OTlixvR0ECLHuMlZVWp4Kcy0IaI62rBtoUJMmMy36p0sbmy8MFaKaL"; 
+
+    // 웹훅 주소가 수정되지 않았을 때의 방어 코드
+    if ($webhook_url == "복사한_디스코드_웹훅_URL을_여기에_붙여넣으세요") {
+        echo "<script>alert('서버 설정 오류: 디스코드 웹훅 주소가 비어있습니다. submit.php 파일을 수정해주세요.'); history.back();</script>";
+        exit;
+    }
+
+    // 3. 디스코드 메시지 레이아웃 설정 (골드 박스 서식)
+    $timestamp = date("Y-m-d H:i:s");
+    
+    $json_data = json_encode([
+        "username" => "ELIO 신청 알리미",
+        "embeds" => [
+            [
+                "title" => "✨ ELIO 클랜에 새로운 가입 신청이 왔습니다!",
+                "description" => "홈페이지를 통해 접수된 신청서 내용입니다. 검토 후 연락바랍니다.",
+                "color" => hexdec("D4AF37"), // ELIO 로고 맞춤 골드 컬러 테두리선
+                "timestamp" => date('c'),
+                
+                "fields" => [
+                    [
+                        "name" => "👤 신청자 인적사항",
+                        "value" => "• **이름/닉네임:** {$username}\n• **나이:** {$userage}세",
+                        "inline" => false
+                    ],
+                    [
+                        "name" => "🎮 게임 및 디스코드 정보",
+                        "value" => "• **게임 ID:** **{$gameid}**\n• **접속 시간대:** {$gametime}\n• **마이크 상태:** {$mic}",
+                        "inline" => false
+                    ],
+                    [
+                        "name" => "📝 지원 동기 및 한마디",
+                        "value" => "```\n{$reason}\n```",
+                        "inline" => false
+                    ]
+                ],
+                "footer" => [
+                    "text" => "신청 일시: {$timestamp}"
+                ]
+            ]
+        ]
+    ], JSON_UNESCAPED_UNICODE);
+
+    // 4. cURL을 이용한 디스코드 데이터 전송
+    $ch = curl_init($webhook_url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+    $response = curl_exec($ch);
+    $http_code = curl_get_info($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    // 5. 전송 결과 안내 및 리다이렉트
+    if ($http_code == 204 || $http_code == 200) {
+        echo "<script>
+                alert('ELIO 클랜 신청이 완료되었습니다!\\n운영진 확인 후 안내해 드리겠습니다.');
+                location.href = 'index.html'; 
+              </script>";
+    } else {
+        echo "<script>
+                alert('전송 오류가 발생했습니다. 웹훅 주소를 다시 확인해주세요. (에러 코드: " . $http_code . ")');
+                history.back();
+              </script>";
+    }
+} else {
+    echo "올바르지 않은 접근입니다.";
+}
+?>
