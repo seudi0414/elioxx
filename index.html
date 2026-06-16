@@ -3,62 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELIO CLAN - 가입 신청서</title>
+    <title>ELIO CLAN - 공식 가입 신청서</title>
     <style>
         /* 기본 스타일 리셋 */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
         }
 
         body {
-            background-color: #0b0b0b;
-            color: #e5e5e5;
+            background-color: #fcfbfa;
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            background-image: radial-gradient(circle at center, #ffffff 0%, #f4f0e6 100%);
         }
 
-        /* 메인 컨테이너 (블랙 & 골드 컨셉) */
+        /* 메인 컨테이너 */
         .container {
             width: 100%;
             max-width: 550px;
-            background: #121212;
-            border: 1px solid #d4af37; /* 클래식 골드 테두리 */
-            border-radius: 12px;
-            padding: 40px 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.1);
+            background: #ffffff;
+            border: 2px solid #eec55a; 
+            border-radius: 16px;
+            padding: 45px 35px;
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.08), 0 0 25px rgba(238, 197, 90, 0.15);
+            position: relative;
         }
 
+        /* 헤더 영역 */
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #d4af37;
-            letter-spacing: 3px;
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1cc64 0%, #c6942b 50%, #f9df97 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
             text-transform: uppercase;
+            display: inline-block;
         }
 
         .header p {
-            color: #888;
+            color: #8b7543;
             font-size: 14px;
-            margin-top: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 6px;
         }
 
-        /* 상단 단계 표시줄 */
+        /* 5단계 프로그레스 바 */
         .progress-container {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 35px;
+            margin-bottom: 40px;
             position: relative;
         }
 
@@ -69,8 +76,8 @@
             left: 0;
             transform: translateY(-50%);
             width: 100%;
-            height: 2px;
-            background: #2a2a2a;
+            height: 3px;
+            background: #eae3d2;
             z-index: 1;
         }
 
@@ -79,34 +86,34 @@
             top: 50%;
             left: 0;
             transform: translateY(-50%);
-            height: 2px;
-            background: #d4af37;
+            height: 3px;
+            background: linear-gradient(90deg, #eec55a, #c6942b);
             z-index: 1;
             width: 0%;
-            transition: width 0.4s ease;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .step-dot {
-            width: 32px;
-            height: 32px;
-            background: #121212;
-            border: 2px solid #2a2a2a;
+            width: 34px;
+            height: 34px;
+            background: #ffffff;
+            border: 2px solid #eae3d2;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: #888;
+            font-size: 13px;
+            font-weight: 700;
+            color: #bfa365;
             z-index: 2;
             transition: all 0.4s ease;
         }
 
         .step-dot.active {
-            border-color: #d4af37;
-            color: #d4af37;
-            background: #1a1a1a;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            border-color: #c6942b;
+            color: #ffffff;
+            background: linear-gradient(135deg, #f1cc64 0%, #c6942b 100%);
+            box-shadow: 0 0 12px rgba(198, 148, 43, 0.4);
         }
 
         /* 단계별 화면 제어 */
@@ -120,10 +127,11 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* 입력 양식 스타일 */
         .input-group {
             margin-bottom: 25px;
         }
@@ -131,68 +139,90 @@
         .input-group label {
             display: block;
             font-size: 14px;
-            color: #c5a059;
+            color: #8b7543;
             margin-bottom: 8px;
+            font-weight: 700;
         }
 
         .input-group input, .input-group textarea, .input-group select {
             width: 100%;
-            padding: 14px 16px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            color: #fff;
+            padding: 15px 18px;
+            background: #fdfcf9;
+            border: 1px solid #dfd5be;
+            border-radius: 8px;
+            color: #333;
             font-size: 15px;
+            transition: all 0.3s ease;
         }
 
         .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
             outline: none;
-            border-color: #d4af37;
-            box-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
+            border-color: #c6942b;
+            background: #ffffff;
+            box-shadow: 0 0 8px rgba(198, 148, 43, 0.2);
         }
 
         .input-group textarea {
             resize: none;
-            height: 120px;
+            height: 130px;
         }
 
+        /* 버튼 스타일 */
         .btn-container {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px;
+            margin-top: 35px;
             gap: 15px;
         }
 
         .btn {
             flex: 1;
-            padding: 15px;
+            padding: 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-next, .btn-submit {
-            background: linear-gradient(135deg, #d4af37 0%, #aa841a 100%);
-            color: #000;
+            background: linear-gradient(135deg, #f1cc64 0%, #c6942b 50%, #b2801b 100%);
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(198, 148, 43, 0.25);
+        }
+
+        .btn-next:hover, .btn-submit:hover {
+            background: linear-gradient(135deg, #fddb7d 0%, #d6a234 50%, #c6942b 100%);
+            box-shadow: 0 6px 18px rgba(198, 148, 43, 0.4);
+            transform: translateY(-1px);
         }
 
         .btn-prev {
-            background: #222;
-            color: #aaa;
-            border: 1px solid #333;
+            background: #f4f0e6;
+            color: #7a6b48;
+            border: 1px solid #dfd5be;
+        }
+
+        .btn-prev:hover {
+            background: #eae3d2;
+            color: #5c5033;
         }
 
         .notice-box {
-            background: #161616;
-            border-left: 3px solid #d4af37;
-            padding: 15px;
+            background: #faf7f0;
+            border-left: 4px solid #c6942b;
+            padding: 18px;
             font-size: 13px;
-            color: #aaa;
+            color: #666;
             line-height: 1.6;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .notice-box strong {
+            color: #c6942b;
         }
     </style>
 </head>
@@ -201,33 +231,46 @@
 <div class="container">
     <div class="header">
         <h1>ELIO CLAN</h1>
-        <p>클랜 가입 신청서</p>
+        <p>엘리오 클랜 가입 신청서</p>
     </div>
 
+    <!-- 5단계 상태 바 -->
     <div class="progress-container">
         <div class="progress-bar" id="progress"></div>
         <div class="step-dot active">1</div>
         <div class="step-dot">2</div>
         <div class="step-dot">3</div>
+        <div class="step-dot">4</div>
+        <div class="step-dot">5</div>
     </div>
 
     <form id="applicationForm" onsubmit="sendToDiscord(event)">
         
+        <!-- STEP 1: 기본 인적 사항 -->
         <div class="form-step active">
             <div class="notice-box">
                 <strong>[ELIO 클랜 가입 안내]</strong><br>
-                1. 이중 클랜 및 불법 프로그램 사용자는 가입이 불가합니다.<br>
-                2. 신청서 작성이 완료되면 디스코드로 실시간 전달됩니다.
+                반짝이는 황금빛 여정, 엘리오 클랜의 일원이 되어주세요.<br>
+                허위 정보를 작성할 경우 가입이 취소될 수 있습니다.
             </div>
             
             <div class="input-group">
-                <label>실명 또는 닉네임</label>
-                <input type="text" id="username" placeholder="예: 홍길동" required>
+                <label>클랜 닉네임</label>
+                <input type="text" id="username" placeholder="서든어택 닉네임을 적어주세요." required>
             </div>
 
             <div class="input-group">
-                <label>나이</label>
-                <input type="number" id="userage" placeholder="예: 24" required>
+                <label>나이 (숫자만 입력)</label>
+                <input type="number" id="userage" placeholder="예: 25" min="1" max="100" required>
+            </div>
+
+            <div class="input-group">
+                <label>성별</label>
+                <select id="usergender" required>
+                    <option value="" disabled selected>선택해주세요</option>
+                    <option value="남자">남자</option>
+                    <option value="여자">여자</option>
+                </select>
             </div>
 
             <div class="btn-container">
@@ -236,23 +279,31 @@
             </div>
         </div>
 
+        <!-- STEP 2: 인게임 플레이 스타일 -->
         <div class="form-step">
             <div class="input-group">
-                <label>게임 내 ID (정확하게 입력)</label>
-                <input type="text" id="gameid" placeholder="elio_player" required>
+                <label>주포 (주요 총기)</label>
+                <select id="mainweapon" required>
+                    <option value="" disabled selected>선택해주세요</option>
+                    <option value="스나이퍼">스나이퍼</option>
+                    <option value="라이플">라이플</option>
+                    <option value="멀티">멀티</option>
+                </select>
             </div>
 
             <div class="input-group">
                 <label>주요 접속 시간대</label>
-                <select id="gametime" required>
-                    <option value="" disabled selected>선택해주세요</option>
-                    <option value="오전 (06시 ~ 12시)">오전 (06시 ~ 12시)</option>
-                    <option value="오후 (12시 ~ 18시)">오후 (12시 ~ 18시)</option>
-                    <option value="저녁 (18시 ~ 24시)">저녁 (18시 ~ 24시)</option>
-                    <option value="새벽 (24시 ~ 06시)">새벽 (24시 ~ 06시)</option>
-                </select>
+                <input type="text" id="gametime" placeholder="예: 평일 저녁 8시 ~ 새벽 1시 / 주말 풀접" required>
             </div>
 
+            <div class="btn-container">
+                <button type="button" class="btn btn-prev" onclick="prevStep(0)">이전 단계</button>
+                <button type="button" class="btn btn-next" onclick="nextStep(2)">다음 단계</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: 소통 및 클랜 인맥 구도 -->
+        <div class="form-step">
             <div class="input-group">
                 <label>디스코드 마이크 가능 여부</label>
                 <select id="mic" required>
@@ -262,21 +313,45 @@
                 </select>
             </div>
 
-            <div class="btn-container">
-                <button type="button" class="btn btn-prev" onclick="prevStep(0)">이전 단계</button>
-                <button type="button" class="btn btn-next" onclick="nextStep(2)">다음 단계</button>
-            </div>
-        </div>
-
-        <div class="form-step">
             <div class="input-group">
-                <label>지원 동기 및 각오</label>
-                <textarea id="reason" placeholder="간단한 자기소개 및 신청 이유를 적어주세요." required></textarea>
+                <label>클랜 내 인맥 여부 (없을 시 '무' 기재)</label>
+                <input type="text" id="connection" placeholder="아는 클랜원의 닉네임을 적어주세요. 없으면 '무'" required>
             </div>
 
             <div class="btn-container">
                 <button type="button" class="btn btn-prev" onclick="prevStep(1)">이전 단계</button>
-                <button type="submit" class="btn btn-submit">신청서 제출하기</button>
+                <button type="button" class="btn btn-next" onclick="nextStep(3)">다음 단계</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: 전력 및 링크 인증 -->
+        <div class="form-step">
+            <div class="input-group">
+                <label>전 클랜 탈퇴 사유</label>
+                <input type="text" id="leave_reason" placeholder="이전 클랜의 탈퇴 혹은 해체 사유를 적어주세요." required>
+            </div>
+
+            <div class="input-group">
+                <label>병영수첩 링크 첨부</label>
+                <input type="url" id="barracks_link" placeholder="https://barracks.sa.nexon.com/..." required>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-prev" onclick="prevStep(2)">이전 단계</button>
+                <button type="button" class="btn btn-next" onclick="nextStep(4)">다음 단계</button>
+            </div>
+        </div>
+
+        <!-- STEP 5: 최종 한마디 -->
+        <div class="form-step">
+            <div class="input-group">
+                <label>가입 전 하고 싶은 말</label>
+                <textarea id="final_message" placeholder="엘리오 클랜에 전하고 싶은 각오나 질문을 자유롭게 남겨주세요." required></textarea>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-prev" onclick="prevStep(3)">이전 단계</button>
+                <button type="submit" class="btn btn-submit">신청서 최종 제출하기</button>
             </div>
         </div>
 
@@ -317,29 +392,37 @@
     function sendToDiscord(event) {
         event.preventDefault();
 
-        // ⭐ 여기에 디스코드 웹훅 주소를 넣어주세요 (양쪽 큰따옴표 "" 유지 필수!) ⭐
+        // ⚠️ [필수] 여기에 디스코드 채널 웹훅 주소를 꼭 다시 넣어주세요! ⚠️
         const webhookUrl = "https://discord.com/api/webhooks/1516303098421710921/bpqvQewa-kLt61OTlixvR0ECLHuMlZVWp4Kcy0IaI62rBtoUJMmMy36p0sbmy8MFaKaL";
 
+        // 데이터 수집
         const username = document.getElementById("username").value;
         const userage = document.getElementById("userage").value;
-        const gameid = document.getElementById("gameid").value;
+        const usergender = document.getElementById("usergender").value;
+        const mainweapon = document.getElementById("mainweapon").value;
         const gametime = document.getElementById("gametime").value;
         const mic = document.getElementById("mic").value;
-        const reason = document.getElementById("reason").value;
+        const connection = document.getElementById("connection").value;
+        const leave_reason = document.getElementById("leave_reason").value;
+        const barracks_link = document.getElementById("barracks_link").value;
+        const final_message = document.getElementById("final_message").value;
 
+        // 디스코드 가독성 패키징 (Embed 카드 양식)
         const requestData = {
             username: "ELIO 신청 알리미",
             embeds: [{
-                title: "✨ ELIO 클랜에 새로운 가입 신청이 왔습니다!",
-                description: "깃허브 홈페이지를 통해 접수된 신청서입니다.",
+                title: "👑 ELIO 클랜 신규 가입 신청서",
+                description: "웹사이트에서 작성된 실시간 신청서 레이아웃입니다.",
                 color: parseInt("D4AF37", 16),
                 timestamp: new Date().toISOString(),
                 fields: [
-                    { name: "👤 신청자 인적사항", value: `• **이름/닉네임:** ${username}\n• **나이:** ${userage}세`, inline: false },
-                    { name: "🎮 게임 및 디스코드 정보", value: `• **게임 ID:** **${gameid}**\n• **접속 시간대:** ${gametime}\n• **마이크 상태:** ${mic}`, inline: false },
-                    { name: "📝 지원 동기 및 한마디", value: `\`\`\`\n${reason}\n\`\`\``, inline: false }
+                    { name: "👤 1단계: 기본 인적사항", value: `• **닉네임:** ${username}\n• **나이:** ${userage}세\n• **성별:** ${usergender}`, inline: false },
+                    { name: "🎮 2단계: 게임 플레이 정보", value: `• **주총:** ${mainweapon}\n• **접속 시간대:** ${gametime}`, inline: false },
+                    { name: "💬 3단계: 소통 및 인맥", value: `• **마이크 가능 여부:** ${mic}\n• **클랜 인맥:** ${connection}`, inline: false },
+                    { name: "📋 4단계: 클랜 전적 및 인증", value: `• **전 클랜 탈퇴사유:** ${leave_reason}\n• **병영수첩:** [바로가기 링크](${barracks_link})`, inline: false },
+                    { name: "📝 5단계: 가입 전 하고 싶은 말", value: `\`\`\`\n${final_message}\n\`\`\``, inline: false }
                 ],
-                footer: { text: "ELIO CLAN 가입 신청 시스템" }
+                footer: { text: "ELIO CLAN 공식 가입 신청 시스템" }
             }]
         };
 
@@ -350,15 +433,15 @@
         })
         .then(response => {
             if (response.ok) {
-                alert("ELIO 클랜 신청이 성공적으로 완료되었습니다!\n운영진 확인 후 연락드리겠습니다.");
+                alert("엘리오 클랜 신청서가 성공적으로 전송되었습니다!\n운영진이 확인 후 빠르게 연락드리겠습니다.");
                 location.reload();
             } else {
-                alert("전송 중 오류가 발생했습니다. 웹훅 주소를 다시 확인해주세요.");
+                alert("웹훅 주소 설정 오류 또는 디스코드 서버 전송 실패가 발생했습니다.");
             }
         })
         .catch(error => {
             console.error("Error:", error);
-            alert("네트워크 오류가 발생했습니다.");
+            alert("네트워크 통신 오류가 발생했습니다.");
         });
     }
 </script>
