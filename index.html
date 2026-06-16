@@ -314,17 +314,12 @@
         updateProgress(targetStepIndex);
     }
 
-    // ⭐ 깃허브 전용: 디스코드 웹훅으로 바로 쏘는 자바스크립트 기능 ⭐
     function sendToDiscord(event) {
-        event.preventDefault(); // 페이지 새로고침 방지
+        event.preventDefault();
 
-        // 1. 디스코드 채널에서 가져온 본인의 웹훅 URL을 여기에 붙여넣으세요!
+        // ⭐ 여기에 디스코드 웹훅 주소를 넣어주세요 (양쪽 큰따옴표 "" 유지 필수!) ⭐
         const webhookUrl = "https://discord.com/api/webhooks/1516303098421710921/bpqvQewa-kLt61OTlixvR0ECLHuMlZVWp4Kcy0IaI62rBtoUJMmMy36p0sbmy8MFaKaL";
 
-       
-        }
-
-        // 2. 입력된 값 수집
         const username = document.getElementById("username").value;
         const userage = document.getElementById("userage").value;
         const gameid = document.getElementById("gameid").value;
@@ -332,13 +327,12 @@
         const mic = document.getElementById("mic").value;
         const reason = document.getElementById("reason").value;
 
-        // 3. 디스코드 전송 데이터 패키지 만들기 (골드 테두리 스타일)
         const requestData = {
             username: "ELIO 신청 알리미",
             embeds: [{
                 title: "✨ ELIO 클랜에 새로운 가입 신청이 왔습니다!",
                 description: "깃허브 홈페이지를 통해 접수된 신청서입니다.",
-                color: parseInt("D4AF37", 16), // 골드 색상
+                color: parseInt("D4AF37", 16),
                 timestamp: new Date().toISOString(),
                 fields: [
                     { name: "👤 신청자 인적사항", value: `• **이름/닉네임:** ${username}\n• **나이:** ${userage}세`, inline: false },
@@ -349,7 +343,6 @@
             }]
         };
 
-        // 4. 디스코드로 전송 (Fetch API 이용)
         fetch(webhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -358,7 +351,7 @@
         .then(response => {
             if (response.ok) {
                 alert("ELIO 클랜 신청이 성공적으로 완료되었습니다!\n운영진 확인 후 연락드리겠습니다.");
-                location.reload(); // 신청 완료 후 페이지 초기화
+                location.reload();
             } else {
                 alert("전송 중 오류가 발생했습니다. 웹훅 주소를 다시 확인해주세요.");
             }
